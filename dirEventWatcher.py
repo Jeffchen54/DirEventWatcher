@@ -47,6 +47,12 @@ def send_email(subject:str, body:str, sender:str, recipients:list[str], password
     for path in files:
         part = MIMEBase('application', "octet-stream")
         
+        # wait for file to download fully
+        file_sz = -1
+        while file_sz != Path(path).stat().st_size:
+            file_sz = Path(path).stat().st_size
+            sleep(1)
+        
         try:            
             with open(path, 'rb') as file:
                     part.set_payload(file.read())
